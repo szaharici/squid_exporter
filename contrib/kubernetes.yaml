@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: squid
+  labels:
+    app: proxy
+spec:
+  containers:
+    - name: squid
+      image: sameersbn/squid
+      ports:
+        - containerPort: 3128
+    - name: squid-exporter
+      image: szaharici/squid_exporter
+      ports:
+        - containerPort: 9399
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: squid-exporter
+spec:
+  selector:
+    app: proxy
+  ports:
+    - protocol: TCP
+      port: 9399
+      targetPort: 9399

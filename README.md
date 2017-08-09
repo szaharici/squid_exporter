@@ -15,7 +15,7 @@ You could also run it in docker as well
 ```
 docker run -p 9399:9399 -d szaharici/squid_exporter
 ```
-When running in docker make sure that the docker Ip range is authorized to query the cache manager statistics. Information about the squid cache manager are available here: https://wiki.squid-cache.org/Features/CacheManager
+When running in docker make sure that the docker Ip range is authorized to query the cache manager statistics. Information about the squid cache manager is available here: https://wiki.squid-cache.org/Features/CacheManager
 ## Kubernetes
 The squid exporter could be run as a container in a pod alongside squid
 ```

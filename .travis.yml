@@ -1,2 +1,2 @@
 language: go
-script: go build squid_exporter.go 
+script: CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' squid_exporter.go

@@ -87,7 +87,6 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		log.Print("Problem communicating with squid")
 		e.up.Set(0)
 		e.up.Collect(ch)
-		//time.Sleep(10 * time.Second)
 		return
 
 	}
@@ -141,7 +140,6 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		e.squidmetrics_ids[squidmetric].Collect(ch)
 	}
 
-	//e.squidmetrics["Numberofclientsaccessingcache"].Collect(ch)
 	e.up.Set(1)
 	e.up.Collect(ch)
 }
@@ -160,12 +158,12 @@ func main() {
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
 
-//GetSquidStats gathers squid cache manager statistics
 
 func GetFloat(value string) float64 {
 	float, _ := strconv.ParseFloat(value, 64)
 	return float
 }
+
 func ExtractLines(linetolookfor string, metric *prometheus.GaugeVec, category string) {
 	extractvalues = strings.Split(linetolookfor, ",")
 	metric.With(prometheus.Labels{"time": "5min", "category": category}).Set(GetFloat(extractvalues[0]))

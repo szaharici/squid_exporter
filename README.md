@@ -21,3 +21,4 @@ The squid exporter could be run as a container in a pod alongside squid
 ```
 kubectl create -f contrib/kubernetes.yaml
 ```
+

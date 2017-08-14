@@ -27,7 +27,6 @@ type Exporter struct {
 	URL   string
 	mutex sync.Mutex
 	up    prometheus.Gauge
-	//Numberofclientsaccessingcache *prometheus.Gauge
 	squidmetrics_conn_info  map[string]*prometheus.GaugeVec
 	squidmetrics_cache_info map[string]*prometheus.GaugeVec
 	squidmetrics_ids        map[string]*prometheus.GaugeVec

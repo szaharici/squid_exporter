@@ -14,9 +14,15 @@ The exporter can be run on the squid server or on a server with access to the sq
 ## Docker
 You could also run it in docker as well
 ```
-docker run -p 9399:9399 -d szaharici/squid_exporter
+docker run -p 9399:9399 --network="host" -d szaharici/squid_exporter
 ```
-When running in docker make sure that the docker Ip range is authorized to query the cache manager statistics. Information about the squid cache manager is available here: https://wiki.squid-cache.org/Features/CacheManager
+If squid is not running on localhost, you can specify its cache manager statistics url
+```
+docker run -p 9399:9399 -d szaharici/squid_exporter /squid_exporter -squid-url=http://squid_host:3128/squid-internal-mgr/info
+
+```
+When connecting to squid remotely make sure you are authorized to query the cache manager statistics. Information about the squid cache manager is available here: https://wiki.squid-cache.org/Features/CacheManager
+
 ## Kubernetes
 The squid exporter could be run as a container in a pod alongside squid
 ```

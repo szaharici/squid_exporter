@@ -24,12 +24,13 @@ var (
 )
 
 type Exporter struct {
-	URL                     string
-	mutex                   sync.Mutex
-	up                      prometheus.Gauge
-	squidmetrics_conn_info  map[string]*prometheus.GaugeVec
-	squidmetrics_cache_info map[string]*prometheus.GaugeVec
-	squidmetrics_ids        map[string]*prometheus.GaugeVec
+	URL                         string
+	mutex                       sync.Mutex
+	up                          prometheus.Gauge
+	squidmetrics_conn_info      map[string]*prometheus.GaugeVec
+	squidmetrics_cache_info     map[string]*prometheus.GaugeVec
+	squidmetrics_ids            map[string]*prometheus.GaugeVec
+	squidmetrics_resource_usage map[string]*prometheus.GaugeVec
 }
 
 func NewExporter(url string) *Exporter {
@@ -62,6 +63,15 @@ func NewExporter(url string) *Exporter {
 			"HotObjectCacheItems":        prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_hot_object_cache_items", Help: "squid stat"}, []string{"category"}),
 			"Ondiskobjects":              prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_ondisk_objects", Help: "squid stat"}, []string{"category"}),
 		},
+		squidmetrics_resource_usage: map[string]*prometheus.GaugeVec{
+			"UpTime":                   prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_uptime", Help: "squid stat"}, []string{"category"}),
+			"CPUTime":                  prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_cputime", Help: "squid stat"}, []string{"category"}),
+			"CPUUsage":                 prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_cpuusage", Help: "squid stat"}, []string{"category"}),
+			"CPUUsage,5minuteavg":      prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_cpuusage_5min", Help: "squid stat"}, []string{"category"}),
+			"CPUUsage,60minuteavg":     prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_cpuusage_60min", Help: "squid stat"}, []string{"category"}),
+			"MaximumResidentSize":      prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_max_resident_size", Help: "squid stat"}, []string{"category"}),
+			"PageFaultswithPhysicalIO": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_page_faults_with_physical_io", Help: "squid stat"}, []string{"category"}),
+		},
 	}
 }
 
@@ -73,6 +83,9 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 		mdesc.Describe(ch)
 	}
 	for _, mdesc := range e.squidmetrics_ids {
+		mdesc.Describe(ch)
+	}
+	for _, mdesc := range e.squidmetrics_resource_usage {
 		mdesc.Describe(ch)
 	}
 	ch <- e.up.Desc()
@@ -138,6 +151,11 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	for squidmetric, _ := range e.squidmetrics_ids {
 		e.squidmetrics_ids[squidmetric].With(prometheus.Labels{"category": "internal_data_structures"}).Set(GetFloat(m[squidmetric]))
 		e.squidmetrics_ids[squidmetric].Collect(ch)
+	}
+	for squidmetric, _ := range e.squidmetrics_resource_usage {
+		e.squidmetrics_resource_usage[squidmetric].With(prometheus.Labels{"category": "resource_usage"}).Set(GetFloat(m[squidmetric]))
+		e.squidmetrics_resource_usage[squidmetric].Collect(ch)
+
 	}
 
 	e.up.Set(1)

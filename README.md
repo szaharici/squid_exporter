@@ -1,7 +1,7 @@
 ![Build status](https://api.travis-ci.org/szaharici/squid_exporter.svg?branch=master)
 # Prometheus squid exporter
 
-This is a prometheus squid exporter that exports the squid cache manager statistics in prometheus format. The exporter is heavily inspired by the haproxy and apache exporters. It is work in progress, not all the statistics are integrated yet
+This is a prometheus squid exporter that exposes squid cache manager statistics in prometheus format. The exporter is heavily inspired by the haproxy and apache exporters. It is work in progress, not all the statistics are integrated yet
 
 # Usage
 

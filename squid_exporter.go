@@ -24,9 +24,9 @@ var (
 )
 
 type Exporter struct {
-	URL   string
-	mutex sync.Mutex
-	up    prometheus.Gauge
+	URL                     string
+	mutex                   sync.Mutex
+	up                      prometheus.Gauge
 	squidmetrics_conn_info  map[string]*prometheus.GaugeVec
 	squidmetrics_cache_info map[string]*prometheus.GaugeVec
 	squidmetrics_ids        map[string]*prometheus.GaugeVec
@@ -37,30 +37,30 @@ func NewExporter(url string) *Exporter {
 		URL: url,
 		up:  prometheus.NewGauge(prometheus.GaugeOpts{Name: "up", Help: "Was the last scrape of squid successful."}),
 		squidmetrics_conn_info: map[string]*prometheus.GaugeVec{
-			"Numberofclientsaccessingcache":          prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_clients_accessing_cache", Help: "squid stat"}, []string{"category"}),
-			"NumberofHTTPrequestsreceived":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_http_requests_received", Help: "squid stat"}, []string{"category"}),
-			"NumberofICPmessagesreceived":            prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_icp_messages_received", Help: "squid stat"}, []string{"category"}),
-			"NumberofICPmessagessent":                prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_icp_messages_sent", Help: "squid stat"}, []string{"category"}),
-			"NumberofqueuedICPreplies":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_queued_icp_replies", Help: "squid stat"}, []string{"category"}),
-			"NumberofHTCPmessagesreceived":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_htcp_messages_received", Help: "squid stat"}, []string{"category"}),
-			"NumberofHTCPmessagessent":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_htcp_messages_sent", Help: "squid stat"}, []string{"category"}),
-			"Requestfailureratio":                    prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "request_failure_ratio", Help: "squid stat"}, []string{"category"}),
-			"AverageHTTPrequestsperminutesincestart": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "average_http_requests_per_minute_since_start", Help: "squid stat"}, []string{"category"}),
-			"AverageICPmessagesperminutesincestart":  prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "average_icp_messages_per_minute_since_start", Help: "squid stat"}, []string{"category"}),
-			"SelectLoopcalled":                       prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "select_loop_called", Help: "squid stat. Used with label details which is either times or ms avg"}, []string{"details", "category"}),
+			"Numberofclientsaccessingcache":          prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_clients_accessing_cache", Help: "squid stat"}, []string{"category"}),
+			"NumberofHTTPrequestsreceived":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_http_requests_received", Help: "squid stat"}, []string{"category"}),
+			"NumberofICPmessagesreceived":            prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_icp_messages_received", Help: "squid stat"}, []string{"category"}),
+			"NumberofICPmessagessent":                prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_icp_messages_sent", Help: "squid stat"}, []string{"category"}),
+			"NumberofqueuedICPreplies":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_queued_icp_replies", Help: "squid stat"}, []string{"category"}),
+			"NumberofHTCPmessagesreceived":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_htcp_messages_received", Help: "squid stat"}, []string{"category"}),
+			"NumberofHTCPmessagessent":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_htcp_messages_sent", Help: "squid stat"}, []string{"category"}),
+			"Requestfailureratio":                    prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_request_failure_ratio", Help: "squid stat"}, []string{"category"}),
+			"AverageHTTPrequestsperminutesincestart": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_average_http_requests_per_minute_since_start", Help: "squid stat"}, []string{"category"}),
+			"AverageICPmessagesperminutesincestart":  prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_average_icp_messages_per_minute_since_start", Help: "squid stat"}, []string{"category"}),
+			"SelectLoopcalled":                       prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_select_loop_called", Help: "squid stat. Used with label details which is either times or ms avg"}, []string{"details", "category"}),
 		},
 		squidmetrics_cache_info: map[string]*prometheus.GaugeVec{
-			"Hitsasofallrequests":       prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "hits_as_percentage_of_all_requests", Help: "squid stat"}, []string{"time", "category"}),
-			"Hitsasofbytessent":         prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "hits_as_percentage_of_bytes_sent", Help: "squid stat"}, []string{"time", "category"}),
-			"Memoryhitsasofhitrequests": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "memory_hits_as_percentage_of_hit_requests", Help: "squid stat"}, []string{"time", "category"}),
-			"Diskhitsasofhitrequests":   prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "disk_hits_as_percentage_of_hit_requests", Help: "squid stat"}, []string{"time", "category"}),
+			"Hitsasofallrequests":       prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_hits_as_percentage_of_all_requests", Help: "squid stat"}, []string{"time", "category"}),
+			"Hitsasofbytessent":         prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_hits_as_percentage_of_bytes_sent", Help: "squid stat"}, []string{"time", "category"}),
+			"Memoryhitsasofhitrequests": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_memory_hits_as_percentage_of_hit_requests", Help: "squid stat"}, []string{"time", "category"}),
+			"Diskhitsasofhitrequests":   prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_disk_hits_as_percentage_of_hit_requests", Help: "squid stat"}, []string{"time", "category"}),
 			//"StorageSwapSize":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "storage_swap_size", Help: "squid stat"}, []string{"time", "category"}),
 		},
 		squidmetrics_ids: map[string]*prometheus.GaugeVec{
-			"StoreEntries":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_store_entries", Help: "squid stat"}, []string{"category"}),
-			"StoreEntrieswithMemObjects": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_store_entries_with_mem_objects", Help: "squid stat"}, []string{"category"}),
-			"HotObjectCacheItems":        prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_hot_object_cache_items", Help: "squid stat"}, []string{"category"}),
-			"Ondiskobjects":              prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "number_of_ondisk_objects", Help: "squid stat"}, []string{"category"}),
+			"StoreEntries":               prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_store_entries", Help: "squid stat"}, []string{"category"}),
+			"StoreEntrieswithMemObjects": prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_store_entries_with_mem_objects", Help: "squid stat"}, []string{"category"}),
+			"HotObjectCacheItems":        prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_hot_object_cache_items", Help: "squid stat"}, []string{"category"}),
+			"Ondiskobjects":              prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_ondisk_objects", Help: "squid stat"}, []string{"category"}),
 		},
 	}
 }
@@ -157,7 +157,6 @@ func main() {
 	http.Handle("/metrics", promhttp.Handler())
 	log.Fatal(http.ListenAndServe(*addr, nil))
 }
-
 
 func GetFloat(value string) float64 {
 	float, _ := strconv.ParseFloat(value, 64)

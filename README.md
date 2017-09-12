@@ -14,7 +14,7 @@ The exporter can be run on the squid server or on a server with access to the sq
 ## Docker
 You could also run it in docker as well
 ```
-docker run -p 9399:9399 --network="host" -d szaharici/squid_exporter
+docker run --network="host" -d szaharici/squid_exporter
 ```
 If squid is not running on localhost, you can specify its cache manager statistics url
 ```

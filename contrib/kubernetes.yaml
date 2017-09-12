@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: squid
   labels:
-    app: proxy
+    k8s-app: proxy
 spec:
   containers:
     - name: squid
@@ -21,7 +21,7 @@ metadata:
   name: squid-exporter
 spec:
   selector:
-    app: proxy
+    k8s-app: proxy
   ports:
     - protocol: TCP
       port: 9399

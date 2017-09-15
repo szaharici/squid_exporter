@@ -36,7 +36,7 @@ type Exporter struct {
 func NewExporter(url string) *Exporter {
 	return &Exporter{
 		URL: url,
-		up:  prometheus.NewGauge(prometheus.GaugeOpts{Name: "up", Help: "Was the last scrape of squid successful."}),
+		up:  prometheus.NewGauge(prometheus.GaugeOpts{Name: "squid_up", Help: "Was the last scrape of squid successful."}),
 		squidmetrics_conn_info: map[string]*prometheus.GaugeVec{
 			"Numberofclientsaccessingcache":          prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_clients_accessing_cache", Help: "squid stat"}, []string{"category"}),
 			"NumberofHTTPrequestsreceived":           prometheus.NewGaugeVec(prometheus.GaugeOpts{Name: "squid_number_of_http_requests_received", Help: "squid stat"}, []string{"category"}),
